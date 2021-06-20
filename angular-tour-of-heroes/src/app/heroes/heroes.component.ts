@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Hero } from '../hero';
+import { Hero } from '../hero';                     // 匯入資料模型
 import { HeroService } from '../services/hero.service';
 import { MessageService } from '../services/message.service';
 
@@ -8,6 +8,7 @@ import { MessageService } from '../services/message.service';
   templateUrl: './heroes.component.html',
   styleUrls: ['./heroes.component.css'],
 })
+
 export class HeroesComponent implements OnInit {
   /*hero: Hero = {
     id: 1,
@@ -27,10 +28,10 @@ export class HeroesComponent implements OnInit {
 
   selectedHero?: Hero;
 
-  /*onSelect(hero: Hero): void {
-    this.selectedHero = hero;
-    this.messageService.add(`HeroesComponent: Selected hero id=${hero.id}`);
-  }*/
+  // onSelect(hero: Hero): void {
+  //   this.selectedHero = hero;
+  //   this.messageService.add(`HeroesComponent: Selected hero id=${hero.id}`);
+  // }
 
   getHeroes(): void {
     this.heroService.getHeroes().subscribe((heroes) => (this.heroes = heroes));

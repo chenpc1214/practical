@@ -9,13 +9,12 @@ const routes: Routes = [
   { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
   { path: 'heroes', component: HeroesComponent },
   { path: 'dashboard', component: DashboardComponent },
-  { path: 'detail/:id', component: HeroDetailComponent },
+  { path: 'detail/:id', component: HeroDetailComponent },    //: 表示 :id 是一個佔位符，它表示某個特定英雄的 id
 ];
 
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes)], //在應用的最上層配置這個路由器。 forRoot() 方法會提供路由所需的服務提供者和指令，還會基於瀏覽器的當前 URL 執行首次導航。
   exports: [RouterModule],
 })
-
 export class AppRoutingModule {}

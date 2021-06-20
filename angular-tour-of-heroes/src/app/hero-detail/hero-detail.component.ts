@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Hero } from '../hero';
-import { ActivatedRoute } from '@angular/router';
-import { Location } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';              //擷取query string會用到
+import { Location } from '@angular/common';                   //擷取query string會用到
 import { HeroService } from '../services/hero.service';
 
 @Component({
@@ -9,6 +9,7 @@ import { HeroService } from '../services/hero.service';
   templateUrl: './hero-detail.component.html',
   styleUrls: ['./hero-detail.component.css'],
 })
+
 export class HeroDetailComponent implements OnInit {
   @Input() hero?: Hero;
 
@@ -23,7 +24,7 @@ export class HeroDetailComponent implements OnInit {
   }
 
   getHero(): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
+    const id = Number(this.route.snapshot.paramMap.get('id'));               //這很重要!!!!這很重要!!!!這很重要!!!!
     this.heroService.getHero(id).subscribe((hero) => (this.hero = hero));
   }
 

@@ -6,11 +6,11 @@ import { MessageService } from './message.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, map, tap } from 'rxjs/operators';
 
-
-
 @Injectable({
   providedIn: 'root',
 })
+
+
 export class HeroService {
   constructor(
     private messageService: MessageService,
@@ -18,7 +18,7 @@ export class HeroService {
   ) {}
 
   private log(message: string) {
-    this.messageService.add(`HeroService: ${message}`);
+    this.messageService.add(`英雄伺服器狀態: ${message}`);
   }
 
   private heroesUrl = 'api/heroes'; // URL to web api
@@ -40,16 +40,16 @@ export class HeroService {
   /** 拿全部資料 */
   getHeroes(): Observable<Hero[]> {
     return this.http.get<Hero[]>(this.heroesUrl).pipe(
-      tap((_) => this.log('fetched heroes')),
+      tap((_) => this.log('抽出整筆英雄數據')),
       catchError(this.handleError<Hero[]>('getHeroes', []))
     );
   }
 
   /** 拿個別資料 */
   getHero(id: number): Observable<Hero> {
-    const url = `${this.heroesUrl}/${id}`;
+    const url = `${this.heroesUrl}/${id}`;      //  資料伺服器位置：api / heroes / 數字;          
     return this.http.get<Hero>(url).pipe(
-      tap((_) => this.log(`fetched hero id=${id}`)),
+      tap((_) => this.log(`抽出某位英雄編號：${id}`)),
       catchError(this.handleError<Hero>(`getHero id=${id}`))
     );
   }
@@ -62,7 +62,7 @@ export class HeroService {
   updateHero(hero: Hero): Observable<any> {
     return this.http.put(this.heroesUrl, hero, this.httpOptions).pipe(
       //HttpClient.put() 方法接受三個引數：URL 地址、要修改的資料（這裡就是修改後的英雄）、選項
-      tap((_) => this.log(`updated hero id=${hero.id}`)),
+      tap((_) => this.log(`更新某位英雄編號=${hero.id}`)),
       catchError(this.handleError<any>('updateHero'))
     );
   }
@@ -70,7 +70,7 @@ export class HeroService {
   /** 新增資料 */
   addHero(hero: Hero): Observable<Hero> {
     return this.http.post<Hero>(this.heroesUrl, hero, this.httpOptions).pipe(
-      tap((newHero: Hero) => this.log(`added hero w/ id=${newHero.id}`)),
+      tap((newHero: Hero) => this.log(` 新增英雄 w/ id=${newHero.id}`)),
       catchError(this.handleError<Hero>('addHero'))
     );
   }
@@ -80,7 +80,7 @@ export class HeroService {
     const url = `${this.heroesUrl}/${id}`;
 
     return this.http.delete<Hero>(url, this.httpOptions).pipe(
-      tap((_) => this.log(`deleted hero id=${id}`)),
+      tap((_) => this.log(`剔除某位英雄編號：${id}`)),
       catchError(this.handleError<Hero>('deleteHero'))
     );
   }
@@ -93,8 +93,8 @@ export class HeroService {
     return this.http.get<Hero[]>(`${this.heroesUrl}/?name=${term}`).pipe(
       tap((x) =>
         x.length
-          ? this.log(`found heroes matching "${term}"`)
-          : this.log(`no heroes matching "${term}"`)
+          ? this.log(`找到此為英雄 "${term}"`)
+          : this.log(`沒有此為英雄 "${term}"`)
       ),
       catchError(this.handleError<Hero[]>('searchHeroes', []))
     );

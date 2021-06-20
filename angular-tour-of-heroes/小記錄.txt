@@ -1,0 +1,9 @@
+1. 先建立元件-----> 在寫相關方法，這沒有一定
+
+2. 元件不應該「直接」接觸到資料，所以需建立service(服務)，將CRUD方法都寫在service中
+   元件中的邏輯，再去拿取service中想要的方法
+
+3.盡量使用observable.subscribe(observer)模式去撰寫非同步
+
+4.如果 A service 想要有 B service 的功能 ，要先在 A service import  B service ，在使用DI方式，這種方式又稱服務中的服務
+  在此例中可以在 hero.service 看到，它自身服務中又注入了message.service的功能
