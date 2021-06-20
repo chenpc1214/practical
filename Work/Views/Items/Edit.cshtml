@@ -1,0 +1,119 @@
+﻿@model Work.Models.Item
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>更新資料</h1>
+
+<hr />
+<div class="row justify-content-center mt-5">
+    <div class="col-md-4">
+        <form>
+            <input asp-for="Id" type="hidden" />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label class="control-label" style="margin-left: -90%;">姓名</label>
+                @Html.TextBoxFor(model => model.Name, new { @id = "User", @class = "form-control" ,value=Model.Name})
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label" style="margin-left: -90%;">電話</label>
+                @Html.TextBoxFor(model => model.Mobile, new { @id = "Phone", @class = "form-control", value = Model.Mobile })
+                <span asp-validation-for="Mobile" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label" style="margin-left: -80%;">商品名稱</label>
+                @Html.TextBoxFor(model => model.sth, new { @id = "thing", @class = "form-control",value=Model.sth })
+                <span asp-validation-for="sth" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="button" value="修改" class="btn btn-primary" onclick="EditOrNot(@Model.Id)" />
+                <input type="button" value="返回" class="btn btn-warning" onclick="ajaxFunc.IndexItemUrl()" />
+            </div>
+        </form>
+    </div>
+    @Html.AntiForgeryToken()
+</div>
+
+
+<script>
+
+    var ajaxFunc = {
+
+        IndexItemUrl: function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("Index", "Items")",
+                contentType: "html",
+                dataType: "html",
+                success: (function (res) {
+                    $("#divMain").html(res)
+                })
+            })
+        },
+
+        EditItem: function (DataToSend) {
+
+            return new Promise(function (resolve, reject) {
+
+                $.ajax({
+
+                    type: "POST",
+
+                    url: "@Url.Action("Edit", "Items")",
+
+                    contentType: "application/x-www-form-urlencoded;charset=utf-8",
+
+                    data: DataToSend,
+
+                    dataType: "json",
+
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("requestverificationtoken",
+                            $('input:hidden[name="__RequestVerificationToken"]').val());
+                    },
+
+                    success: function (response) {
+                        resolve(response);
+                    },
+
+                    error: function (error) {
+                        reject(error);
+                    }
+                })
+            })
+        }
+    }
+
+    function EditOrNot(num) {
+
+        var Container = {
+            Id:num,
+            Name: $.trim($("#User").val()),
+            Mobile: $.trim($("#Phone").val()),
+            sth: $.trim($("#thing").val())
+        }
+
+        ajaxFunc.EditItem(Container).then(function (result) {
+            if (result === "OK")
+            {
+                $("#divMain").load("@Url.Action("Index","Items")" )
+            }
+        }).then(function (result) {
+
+            if (result === "NotFound") {
+                alert("沒有找到更新的資料")
+            }
+        }).catch(function () {
+
+            alert("發生錯誤")
+
+        })
+    }
+
+</script>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

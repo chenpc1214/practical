@@ -1,0 +1,30 @@
+﻿
+@{
+    ViewData["Title"] = "Panel";
+}
+
+
+
+<div class="text-center" id="divMain">
+
+</div>
+
+
+@section scripts{
+        <script>
+
+            /*/Items/Index*/
+            $(function () {
+                $.ajax({
+                    type: "GET",
+                    url: "@Url.Action("Index", "Items")",
+                    contentType: "html",
+                    dataType:"html",
+                    success: (function (res) {
+                        $("#divMain").html(res)
+                    })
+
+                })
+        } );
+        </script>
+    }

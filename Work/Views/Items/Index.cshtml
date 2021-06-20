@@ -1,0 +1,200 @@
+﻿@model List<Work.Models.Item>
+
+@{
+    ViewData["Title"] = "Index";
+
+    Pager pager = new Pager();
+
+    int PageNo = 0;
+
+    if (ViewBag.Pager != null)
+    {
+        pager = ViewBag.Pager;
+        PageNo = pager.CurrentPage;
+    }
+
+
+}
+
+<h1>首頁</h1>
+
+<p>
+    <input type="button" value="新增資料" class="btn btn-success" style="margin-left:90%" onclick="ajaxFunc.AddItemUrl()" />
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                項次
+            </th>
+            <th>
+                購買者
+            </th>
+            <th>
+                手機號碼
+            </th>
+            <th>
+                購買物品
+            </th>
+            <th>
+                功能
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+
+            for (int i = 0; i < Model.Count(); i++)
+            {
+                <tr>
+                    <td>
+                        @(PageNo > 1 ? ( (PageNo-1) * pager.PageSize)+(i+1)  : i+1)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => model[i].Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => model[i].Mobile)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => model[i].sth)
+                    </td>
+                    <td>
+                        <input type="button" value="編輯" class="btn btn-warning " onclick="ajaxFunc.EditItemUrl(@Model[i].Id)" />
+                        <input type="button" value="明細" class="btn btn-info " onclick="ajaxFunc.DetailItemUrl(@Model[i].Id)" />
+                       <input type="button" value="刪除" class="btn btn-danger " onclick="Delete(@Model[i].Id)" />
+                    </td>
+                </tr>
+            }
+        }
+
+    </tbody>
+    @Html.AntiForgeryToken();
+</table>
+
+<div class=" container">
+    @if (pager.TotalPages > 0)
+    {
+        <ul class="pagination justify-content-center">
+            @for (var pge = pager.StartPage; pge <= pager.EndPage; pge++)
+            {
+                <li class="page-item @(pge==pager.CurrentPage?"active":"")">
+                    <a class="page-link" onclick="ajaxFunc.PageLink(@pge)"> @pge  </a>
+                </li>
+
+            }
+        </ul>
+    }
+
+</div>
+
+
+
+
+<script type="text/javascript">
+
+
+        var ajaxFunc = {
+
+            AddItemUrl: function () {
+                $.ajax({
+                    type: "GET",
+                    url: "@Url.Action("Create", "Items")",
+                    contentType: "html",
+                    dataType:"html",
+                    success: (function (res) {
+                        $("#divMain").html(res)
+                    })
+                })
+            },
+
+            DetailItemUrl: function (ItemId) {
+                $.ajax({
+                    type: "GET",
+                    url: "@Url.Action("Details", "Items")",
+                    contentType: "html",
+                    dataType: "html",
+                    data: {
+                        id: ItemId
+                    },
+                    success: (function (res) {
+                        $("#divMain").html(res)
+                    })
+                })
+            },
+
+            EditItemUrl: function (ItemId) {
+                $.ajax({
+                    type: "GET",
+                    url: "@Url.Action("Edit", "Items")",
+                    contentType: "html",
+                    dataType: "html",
+                    data: {
+                        id: ItemId
+                    },
+                    success: (function (res) {
+                        $("#divMain").html(res)
+                    })
+                })
+            },
+
+            PageLink: function (num) {
+                $.ajax({
+                    type: "GET",
+                    url: "@Url.Action("Index", "Items")",
+                    data: {
+                        pg: num
+                    },
+                    dataType: "html",
+                    success: (function (res) {
+                        $("#divMain").html(res)
+                    })
+                })
+            },
+
+            DeleteItem: function (num) {
+                return new Promise(function (resolve, reject) {
+                    $.ajax({
+
+                        type: "POST",
+
+                        url: "@Url.Action("Delete", "Items")",
+
+                        contentType: "application/x-www-form-urlencoded;charset=utf-8",
+
+                        data: { id: num },
+
+                        dataType: "json",
+
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader("requestverificationtoken",
+                                $('input:hidden[name="__RequestVerificationToken"]').val());
+                        },
+
+                        success: function (response) {
+                            resolve(response);
+                        },
+
+                        error: function (error) {
+                            reject(error);
+                        }
+
+                    })
+                })
+            }
+
+        }
+
+    function Delete(Uid) {
+        ajaxFunc.DeleteItem(Uid).then(function (result) {
+            if (result === "OK")
+            {
+                $("#divMain").load("@Url.Action("Index","Items")").show()
+            }
+        }).catch(function () {
+            alert("發生錯誤")
+        })
+    }
+
+
+</script>
