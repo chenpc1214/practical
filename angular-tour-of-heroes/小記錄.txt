@@ -7,3 +7,7 @@
 
 4.如果 A service 想要有 B service 的功能 ，要先在 A service import  B service ，在使用DI方式，這種方式又稱服務中的服務
   在此例中可以在 hero.service 看到，它自身服務中又注入了message.service的功能
+
+5. const id = Number(this.route.snapshot.paramMap.get('id'));               //這很重要!!!!這很重要!!!!這很重要!!!!
+
+6. rxjs 為什麼用of() ----> https://www.itread01.com/question/NzAyZXc=.html
