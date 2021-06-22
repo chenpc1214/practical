@@ -1,0 +1,14 @@
+1. package.json ： 涵蓋所有模組、套件、或是相依性注入在此專案中會用到的
+
+2 angular.json ：包含一些伺服器的測試檔，或建置此專案的相關，配置設定
+
+3. app_modual：這份angular專案中，所建置的元件、服務、邏輯區塊，都會用到模組進入點
+
+4. 前端在畫面的呈現上，要取資料必須符合，後端的Model資料結構
+
+5. 使用此檔案前，須將MS SQL打開 再開vs的檔案，原因很簡單SQL是資料來源，VS是取資料必經過的門
+
+6. dep-show 那邊的modal顯示功能多加了 data-keyboard   data-backdrop
+
+  (6-1) data-keyboard是否用ESC鍵關閉，預設為true
+  (6-2)data-backdrop="static" 鎖定背景，點擊背景時不自動關閉視窗

@@ -1,0 +1,58 @@
+1.Program.cs  ： 專案程式的進入點，同時也是WebHost 去監聽http的request事件
+
+2. Startup.cs ： 伺服器所需要的相關服務設定，都必須在這做設定，作為DI作用，同時也涵蓋了相關「環境設定」，應用程式的過濾管道
+
+3. 在WebAPI這邊的設定，必須先在Startup.cs手動加入設定
+    
+    (3-1)在 public void ConfigureServices(IServiceCollection services)設定CORS：
+
+            services.AddCors(options =>                         
+            {
+                options.AddPolicy("AllowOrigin", setting =>
+                {
+                    setting.WithOrigins().AllowAnyHeader().AllowAnyMethod().AllowCredentials();
+                });
+            });
+
+    (3-2)public void Configure(IApplicationBuilder app, IWebHostEnvironment env)設定使用CORS
+
+            app.UseCors(options => options.WithOrigins().AllowAnyHeader().AllowAnyMethod().AllowCredentials());
+
+
+    (3-3)在 public void ConfigureServices(IServiceCollection services)設定，使用自定義的JSON序列化方式
+
+            //在NuGet安裝Microsoft.AspNetCore.Mvc.NewtonsoftJson
+            services.AddControllersWithViews().AddNewtonsoftJson(options=>                  
+                                                                  options.SerializerSettings.ReferenceLoopHandling =
+                                                                   Newtonsoft.Json.ReferenceLoopHandling.Ignore)
+                                                                   .AddNewtonsoftJson(options=>options.SerializerSettings.ContractResolver=
+                                                                   new DefaultContractResolver());   
+
+    補充：
+
+            WithOrigins：設定允許跨域的來源，有多個的話可以用 , 隔開。
+                         若要同意所有跨域來源都能呼叫的話，可以把 WithOrigins() 改為 AllowAnyOrigin()。
+
+            AllowAnyHeader：允許任何的 Request Header。
+                            若要限制 Header，可以改用 WithHeaders，有多個的話可以用 , 隔開。
+
+            AllowAnyMethod： 允許任何的 HTTP Method。
+                             若要限制 Method，可以改用 WithMethods，有多個的話可以用 , 隔開。
+
+            AllowCredentials:預設瀏覽器不會發送 CORS 的憑證(如：Cookies)。
+                            如果 JavaScript 使用 withCredentials = true 把 CORS 的憑證帶入，ASP.NET Core 這邊也要允取，才可以正常使用。
+   
+   4. 建立Model 資料夾，定義資料結構
+
+   5.打造Controller
+
+   6.如果有要載入圖片，必須在public void Configure(IApplicationBuilder app, IWebHostEnvironment env)做以下設定
+
+      (6-1)             
+              app.UseStaticFiles(new StaticFileOptions
+                    {
+
+                        FileProvider = new PhysicalFileProvider(  Path.Combine(Directory.GetCurrentDirectory(),  "Photos" )  ),
+                        RequestPath = "/Photos"
+
+                    });
