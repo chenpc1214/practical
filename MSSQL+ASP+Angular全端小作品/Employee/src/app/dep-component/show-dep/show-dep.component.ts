@@ -62,9 +62,7 @@ export class ShowDepComponent implements OnInit {
     var Department_ID_Filter = this.Department_ID_Filter; //會從輸入框來的文字
     var Department_Name_Filter = this.Department_Name_Filter; //會從輸入框來的文字
 
-    this.DepartmentList = this.Department_List_No_Filter.filter(function (
-      element: any
-    ) {
+    this.DepartmentList = this.Department_List_No_Filter.filter(function (element: any) {
       return (
         element.DEP_ID.toString()
           .toLowerCase()

@@ -12,3 +12,72 @@
 
   (6-1) data-keyboard是否用ESC鍵關閉，預設為true
   (6-2)data-backdrop="static" 鎖定背景，點擊背景時不自動關閉視窗
+
+7.show-dep.component.ts此檔中的MyFilter()就是搜尋符合的條件，其運作邏輯如下:
+
+  MyFilter() {
+    var Department_ID_Filter = this.Department_ID_Filter;                           //會從輸入框來的文字，用ID搜尋
+    var Department_Name_Filter = this.Department_Name_Filter;                      //會從輸入框來的文字，用部門名稱搜索
+
+    this.DepartmentList = this.Department_List_No_Filter.filter(function (element: any)  //DepartmentList 和 Department_List_No_Filter
+    {                                                                                    //都是同樣的東西，只是被搜索的對象是Department_List_No_Filter
+      return (
+        element.DEP_ID.toString()                                                        //element是Department_List_No_Filter物件中的成員，取出Key值為DEP_ID的成員，並轉成字串
+          .toLowerCase()                                                                 //將它改成小寫，在這似乎沒必要
+          .includes(Department_ID_Filter.toString().trim().toLowerCase()) &&             //並使用include函式，裡面的參數放的是，要搜索的條件          
+        element.DEP_NAME.toString()                                                     //以下以名稱搜索的條件，一樣同道理呦~~
+          .toLowerCase()
+          .includes(Department_Name_Filter.toString().trim().toLowerCase())
+      );
+    });
+  }
+
+8.show-dep.component.ts此檔中的MySort()就是排序條件，其運作邏輯，
+  詳細可看這篇文章 https://reurl.cc/En4Gen 或是 https://reurl.cc/0j9E89
+
+  重點整理：
+
+  ●當回傳值為負數(-1)時，那麼   前面  放在  前面
+  ●當回傳值為正整數(1)時，那麼  後面  放在  前面
+  ●當回傳值為0，保持不動
+------------------------------------------------------
+  舉例來說~~
+
+  const sth = [8,2,1,5]
+
+  sth.sort(function(a, b) 
+  {
+    console.log(a , b)
+      if(a > b){
+        return 1; // 正數時，後面的數放在前面
+      } else {
+        return -1 // 負數時，前面的數放在前面
+      }
+      
+  });
+  
+  function中的a代表新的數(也就是小三的概念)，b則是經過比對後，放在最前面的舊數，只是這邊要注意，當比到最後一個數字
+  最後一位可憐蟲，會從頭逐一比對所有陣列中的值，自己尋找適合它自己的位置，去置入，所以當時型上述代碼會顯示....
+
+  2,8      //第一輪a,b先比較，所以還不會有小三
+  1,2      //小三和排在第一位，也就是 第一輪的 2 相比
+  5,1     //以下...因為最末位5是可憐蟲，必須從頭開始找適合自己的位置
+  5,2
+  5,8
+------------------------------------------------------
+
+  MySort(element:any ,asc:boolean ){
+
+    this.DepartmentList=this.Department_List_No_Filter.sort(function(a:any,b:any){
+
+      if(asc){
+
+        return a[element]>b[element] ? 1 : (  (a[element]<b[element]) ? -1 : 0 ) ;  
+      }                                                                             
+      else{
+        return b[element] > a[element] ? 1 :(  (b[element] < a[element]) ? -1 : 0 );
+      }
+
+    })
+
+  }
